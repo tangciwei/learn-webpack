@@ -1,29 +1,27 @@
-"use strict";
-
-const glob = require("glob");
 const path = require("path");
-const webpack = require("webpack");
+const glob = require("glob");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const {CleanWebpackPlugin} = require("clean-webpack-plugin");
-
-const setMPA = () => {
+const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // 无法和style-loader共存
+const setMpa = () => {
   const entry = {};
   const htmlWebpackPlugins = [];
   const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js"));
 
   Object.keys(entryFiles).map((index) => {
     const entryFile = entryFiles[index];
-    // '/Users/cpselvis/my-project/src/index/index.js'
 
     const match = entryFile.match(/src\/(.*)\/index\.js/);
     const pageName = match && match[1];
 
     entry[pageName] = entryFile;
+
     htmlWebpackPlugins.push(
       new HtmlWebpackPlugin({
+        // inlineSource: ".css$",
         template: path.join(__dirname, `src/${pageName}/index.html`),
         filename: `${pageName}.html`,
         chunks: [pageName],
+        // chunks: ['vendors', pageName], // todo
         inject: true,
         minify: {
           html5: true,
@@ -43,15 +41,13 @@ const setMPA = () => {
   };
 };
 
-const { entry, htmlWebpackPlugins } = setMPA();
-
+const { entry, htmlWebpackPlugins } = setMpa();
 module.exports = {
-  entry: entry,
+  entry,
   output: {
     path: path.join(__dirname, "dist"),
-    filename: "[name].js",
+    filename: "[name]_[chunkhash:4].js",
   },
-  mode: "development",
   module: {
     rules: [
       {
@@ -59,37 +55,56 @@ module.exports = {
         use: "babel-loader",
       },
       {
-        test: /.css$/,
-        use: ["style-loader", "css-loader"],
-      },
-      {
         test: /.less$/,
-        use: ["style-loader", "css-loader", "less-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: [
+                  require("autoprefixer")({
+                    overrideBrowserslist: ["last 2 version", ">1%", "ios 7"],
+                  }),
+                ],
+              },
+            },
+          },
+          {
+            loader: "px2rem-loader",
+            options: {
+              remUnit: 75,
+              remPrecision: 8,
+            },
+          },
+          "less-loader",
+        ],
       },
+
       {
         test: /.(png|jpg|gif|jpeg)$/,
         use: [
           {
-            loader: "url-loader",
+            loader: "file-loader",
             options: {
-              limit: 10240,
+              name: "[name]_[hash:8].[ext]",
             },
           },
         ],
       },
       {
         test: /.(woff|woff2|eot|ttf|otf)$/,
-        use: "file-loader",
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name]_[hash:8].[ext]",
+            },
+          },
+        ],
       },
     ],
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new CleanWebpackPlugin(),
-  ].concat(htmlWebpackPlugins),
-  devServer: {
-    contentBase: "./dist",
-    hot: true,
-  },
-  devtool: "source-map"
+  plugins: [...htmlWebpackPlugins],
 };
