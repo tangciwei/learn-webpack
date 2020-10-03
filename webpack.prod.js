@@ -1,14 +1,54 @@
 const path = require("path");
+const glob = require("glob");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // 无法和style-loader共存
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
+const setMPA = () => {
+  const entry = {};
+  const htmlWebpackPlugins = [];
+  const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js"));
+
+  Object.keys(entryFiles).map((index) => {
+    const entryFile = entryFiles[index];
+
+    const match = entryFile.match(/src\/(.*)\/index\.js/);
+    const pageName = match && match[1];
+
+    entry[pageName] = entryFile;
+
+    htmlWebpackPlugins.push(
+      new HtmlWebpackPlugin({
+        // inlineSource: ".css$",
+        template: path.join(__dirname, `src/${pageName}/index.html`),
+        filename: `${pageName}.html`,
+        chunks: [pageName],
+        // chunks: ['vendors', pageName], // todo
+        inject: true,
+        minify: {
+          html5: true,
+          collapseWhitespace: true,
+          preserveLineBreaks: false,
+          minifyCSS: true,
+          minifyJS: true,
+          removeComments: false,
+        },
+      })
+    );
+  });
+
+  return {
+    entry,
+    htmlWebpackPlugins,
+  };
+};
+
+const { entry, htmlWebpackPlugins } = setMPA();
+
 module.exports = {
-  entry: {
-    index: "./src/index/index.js",
-    search: "./src/search/index.js",
-  },
+  entry,
   output: {
     path: path.join(__dirname, "dist"),
     filename: "[name]_[chunkhash:4].js",
@@ -45,7 +85,6 @@ module.exports = {
             },
           },
           "less-loader",
-          
         ],
       },
       {
@@ -80,35 +119,7 @@ module.exports = {
       assetNameRegExp: /\.css$/g,
       cssProcessor: require("cssnano"),
     }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src/index/index.html"), // 模板可以使用ejs语法
-      filename: "index.html", // ouput
-      chunks: ["index"],
-      inject: true, // 自动注入
-      minify: {
-        html5: true,
-        collapseWhitespace: true,
-        preserveLineBreaks: false,
-        minifyCSS: true,
-        minifyJS: true,
-        removeComments: false,
-      },
-    }),
-
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src/search/search.html"),
-      filename: "search.html",
-      chunks: ["search"],
-      inject: true,
-      minify: {
-        html5: true,
-        collapseWhitespace: true,
-        preserveLineBreaks: false,
-        minifyCSS: true,
-        minifyJS: true,
-        removeComments: false,
-      },
-    }),
     new CleanWebpackPlugin(),
+    ...htmlWebpackPlugins,
   ],
 };
