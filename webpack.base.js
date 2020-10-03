@@ -2,13 +2,14 @@ const path = require('path');
 const glob = require('glob');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const autoprefixer = require('autoprefixer');
 // 无法和style-loader共存
 const setMpa = () => {
   const entry = {};
   const htmlWebpackPlugins = [];
   const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'));
 
-  Object.keys(entryFiles).map((index) => {
+  Object.keys(entryFiles).forEach((index) => {
     const entryFile = entryFiles[index];
 
     const match = entryFile.match(/src\/(.*)\/index\.js/);
@@ -66,7 +67,7 @@ module.exports = {
             options: {
               postcssOptions: {
                 plugins: [
-                  require('autoprefixer')({
+                  autoprefixer({
                     overrideBrowserslist: ['last 2 version', '>1%', 'ios 7'],
                   }),
                 ],
