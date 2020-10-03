@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "start": "webpack --watch",
+    "build": "webpack",
+    "dev": "webpack-dev-server --open"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +26,7 @@
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",
     "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   }
 }

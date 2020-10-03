@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 module.exports = {
   entry: {
     index: "./src/index.js",
@@ -35,5 +36,10 @@ module.exports = {
         use: "file-loader",
       },
     ],
+  },
+  plugins: [new webpack.HotModuleReplacementPlugin()],
+  devServer: {
+    contentBase: "./dist", // 服务基础模板
+    hot: true, // 热更新
   },
 };
