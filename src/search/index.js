@@ -14,5 +14,8 @@ class Search extends React.Component {
     );
   }
 }
+setTimeout(()=>{
+  ReactDOM.render(<Search />, document.getElementById('root'));
+})
 
-ReactDOM.render(<Search />, document.body);
+// ReactDOM.render(<Search />, document.body);
