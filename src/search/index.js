@@ -1,13 +1,12 @@
-"use strict";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import React from "react";
-import ReactDOM from "react-dom";
-import logo from "./images/logo.png";
-import "./search.less";
+import logo from './images/logo.png';
+import './search.less';
 
 class Search extends React.Component {
-  constructor() {
-    super(...arguments);
+  constructor(...arg) {
+    super(...arg);
 
     this.state = {
       Text: null,
@@ -15,7 +14,7 @@ class Search extends React.Component {
   }
 
   loadComponent() {
-    import("./text.js").then((Text) => {
+    import('./text.js').then((Text) => {
       this.setState({
         Text: Text.default,
       });
@@ -24,16 +23,22 @@ class Search extends React.Component {
 
   render() {
     const { Text } = this.state;
-    const addResult = "addResult";
+    const addResult = 'addResult';
     return (
+      // eslint-disable-next-line react/jsx-filename-extension
       <div className="search-text">
         {Text ? <Text /> : null}
         {addResult}
         搜索文字的内容
-        <img src={logo} onClick={this.loadComponent.bind(this)} />
+        <img
+          src={logo}
+          onClick={() => {
+            this.loadComponent();
+          }}
+        />
       </div>
     );
   }
 }
-ReactDOM.render(<Search />, document.getElementById("root"));
+ReactDOM.render(<Search />, document.getElementById('root'));
 // ReactDOM.render(<Search />, document.body);

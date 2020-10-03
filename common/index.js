@@ -1,6 +1,6 @@
 export function a() {
-    return 'a module';
+  return 'a module';
 }
 export function b() {
-    return 'b module';
+  return 'b module';
 }
