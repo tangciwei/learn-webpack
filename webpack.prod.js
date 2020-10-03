@@ -6,8 +6,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 module.exports = {
   entry: {
-    index: "./src/index.js",
-    search: "./src/search.js",
+    index: "./src/index/index.js",
+    search: "./src/search/index.js",
   },
   output: {
     path: path.join(__dirname, "dist"),
@@ -81,7 +81,7 @@ module.exports = {
       cssProcessor: require("cssnano"),
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src/index.html"), // 模板可以使用ejs语法
+      template: path.join(__dirname, "src/index/index.html"), // 模板可以使用ejs语法
       filename: "index.html", // ouput
       chunks: ["index"],
       inject: true, // 自动注入
@@ -96,7 +96,7 @@ module.exports = {
     }),
 
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src/search.html"),
+      template: path.join(__dirname, "src/search/search.html"),
       filename: "search.html",
       chunks: ["search"],
       inject: true,
