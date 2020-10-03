@@ -13,9 +13,9 @@ const template = fs.readFileSync(
   "utf-8"
 );
 const renderMarkup = (str) => {
-  // const data = require("./data.json");
-  // const dataStr = JSON.stringify(data);
-  const dataStr = 123;
+  const data = require("./data.json");
+  const dataStr = JSON.stringify(data);
+  // const dataStr = 123;
   return template
     .replace("<!--HTML_PLACEHOLDER-->", str)
     .replace(
