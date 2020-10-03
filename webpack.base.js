@@ -1,11 +1,12 @@
-const path = require("path");
-const glob = require("glob");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // 无法和style-loader共存
+const path = require('path');
+const glob = require('glob');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// 无法和style-loader共存
 const setMpa = () => {
   const entry = {};
   const htmlWebpackPlugins = [];
-  const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js"));
+  const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'));
 
   Object.keys(entryFiles).map((index) => {
     const entryFile = entryFiles[index];
@@ -31,7 +32,7 @@ const setMpa = () => {
           minifyJS: true,
           removeComments: false,
         },
-      })
+      }),
     );
   });
 
@@ -45,41 +46,41 @@ const { entry, htmlWebpackPlugins } = setMpa();
 module.exports = {
   entry,
   output: {
-    path: path.join(__dirname, "dist"),
-    filename: "[name]_[chunkhash:4].js",
+    path: path.join(__dirname, 'dist'),
+    filename: '[name]_[chunkhash:4].js',
   },
   module: {
     rules: [
       {
         test: /.js$/,
         exclude: /node_modules/,
-        use: ["babel-loader","eslint-loader"]
+        use: ['babel-loader', 'eslint-loader'],
       },
       {
         test: /.less$/,
         use: [
           MiniCssExtractPlugin.loader,
-          "css-loader",
+          'css-loader',
           {
-            loader: "postcss-loader",
+            loader: 'postcss-loader',
             options: {
               postcssOptions: {
                 plugins: [
-                  require("autoprefixer")({
-                    overrideBrowserslist: ["last 2 version", ">1%", "ios 7"],
+                  require('autoprefixer')({
+                    overrideBrowserslist: ['last 2 version', '>1%', 'ios 7'],
                   }),
                 ],
               },
             },
           },
           {
-            loader: "px2rem-loader",
+            loader: 'px2rem-loader',
             options: {
               remUnit: 75,
               remPrecision: 8,
             },
           },
-          "less-loader",
+          'less-loader',
         ],
       },
 
@@ -87,9 +88,9 @@ module.exports = {
         test: /.(png|jpg|gif|jpeg)$/,
         use: [
           {
-            loader: "file-loader",
+            loader: 'file-loader',
             options: {
-              name: "[name]_[hash:8].[ext]",
+              name: '[name]_[hash:8].[ext]',
             },
           },
         ],
@@ -98,9 +99,9 @@ module.exports = {
         test: /.(woff|woff2|eot|ttf|otf)$/,
         use: [
           {
-            loader: "file-loader",
+            loader: 'file-loader',
             options: {
-              name: "[name]_[hash:8].[ext]",
+              name: '[name]_[hash:8].[ext]',
             },
           },
         ],
