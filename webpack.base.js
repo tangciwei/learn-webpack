@@ -20,8 +20,8 @@ const setMpa = () => {
         // inlineSource: ".css$",
         template: path.join(__dirname, `src/${pageName}/index.html`),
         filename: `${pageName}.html`,
-        chunks: [pageName],
-        // chunks: ['vendors', pageName], // todo
+        // chunks: [pageName],
+        chunks: ['vendors', pageName], // todo
         inject: true,
         minify: {
           html5: true,
