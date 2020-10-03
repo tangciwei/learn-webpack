@@ -1,5 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
+const {CleanWebpackPlugin} = require("clean-webpack-plugin");
+
 module.exports = {
   entry: {
     index: "./src/index.js",
@@ -37,7 +39,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  plugins: [new webpack.HotModuleReplacementPlugin(), new CleanWebpackPlugin()],
   devServer: {
     contentBase: "./dist", // 服务基础模板
     hot: true, // 热更新

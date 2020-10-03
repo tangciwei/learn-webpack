@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // 无法和style-loader共存
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 module.exports = {
   entry: {
     index: "./src/index.js",
@@ -22,7 +22,33 @@ module.exports = {
       },
       {
         test: /.less$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              // postcssOptions: {
+              //   plugins: [
+              //     [
+              //       "autoprefixer",
+              //       {
+              //         overrideBrowserslist: ["last 2 version", ">1%", "ios 7"],
+              //       },
+              //     ],
+              //   ],
+              // },
+              postcssOptions: {
+                plugins: [
+                  require("autoprefixer")({
+                    overrideBrowserslist: ["last 2 version", ">1%", "ios 7"],
+                  }),
+                ],
+              },
+            },
+          },
+          "less-loader",
+        ],
       },
       {
         test: /.(png|jpg|gif|jpeg)$/,
@@ -85,5 +111,6 @@ module.exports = {
         removeComments: false,
       },
     }),
+    new CleanWebpackPlugin(),
   ],
 };
