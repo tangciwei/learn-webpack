@@ -24,7 +24,8 @@ module.exports = {
   devServer: {
     contentBase: "./dist",
     hot: true,
+    stats: 'errors-only'
   },
-
+  stats: 'errors-only'
   // devtool: "inline-source-map",
 };

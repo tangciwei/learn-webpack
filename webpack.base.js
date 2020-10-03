@@ -3,6 +3,8 @@ const glob = require('glob');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+
 // 无法和style-loader共存
 const setMpa = () => {
   const entry = {};
@@ -109,5 +111,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [...htmlWebpackPlugins],
+  plugins: [...htmlWebpackPlugins,new FriendlyErrorsWebpackPlugin()],
 };
