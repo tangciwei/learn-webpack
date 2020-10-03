@@ -28,16 +28,6 @@ module.exports = {
           {
             loader: "postcss-loader",
             options: {
-              // postcssOptions: {
-              //   plugins: [
-              //     [
-              //       "autoprefixer",
-              //       {
-              //         overrideBrowserslist: ["last 2 version", ">1%", "ios 7"],
-              //       },
-              //     ],
-              //   ],
-              // },
               postcssOptions: {
                 plugins: [
                   require("autoprefixer")({
@@ -47,7 +37,15 @@ module.exports = {
               },
             },
           },
+          {
+            loader: "px2rem-loader",
+            options: {
+              remUnit: 75,
+              remPrecision: 8,
+            },
+          },
           "less-loader",
+          
         ],
       },
       {

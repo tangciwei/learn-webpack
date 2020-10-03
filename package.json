@@ -11,7 +11,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "lib-flexible": "^0.3.2"
+  },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
@@ -29,6 +31,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.4",
     "postcss": "^8.1.1",
     "postcss-loader": "^4.0.3",
+    "px2rem-loader": "^0.1.9",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "style-loader": "^1.2.1",
