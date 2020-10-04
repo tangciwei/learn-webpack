@@ -1,7 +1,8 @@
 const cssnano = require("cssnano");
-const path = require('path')
+const path = require("path");
 const { merge } = require("webpack-merge");
 const webpack = require("webpack");
+const glob = require("glob");
 const HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const baseConfig = require("./webpack.base");
@@ -10,6 +11,10 @@ const smp = new SpeedMeasureWebpackPlugin();
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const TerserPlugin = require("terser-webpack-plugin");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
+const PurgecssPlugin = require("purgecss-webpack-plugin");
+const PATHS = {
+  src: path.join(__dirname, 'src')
+};
 
 const prodConfig = {
   mode: "production",
@@ -36,6 +41,9 @@ const prodConfig = {
       manifest: require("./build/library/library.json"),
     }),
     new HardSourceWebpackPlugin(),
+    new PurgecssPlugin({
+      paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true }),
+    }),
     // new BundleAnalyzerPlugin(),
   ],
   optimization: {
