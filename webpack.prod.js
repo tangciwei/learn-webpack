@@ -5,7 +5,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const baseConfig = require("./webpack.base");
 const SpeedMeasureWebpackPlugin = require("speed-measure-webpack-plugin");
 const smp = new SpeedMeasureWebpackPlugin();
-
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const prodConfig = {
   mode: "production",
   plugins: [
@@ -27,6 +27,7 @@ const prodConfig = {
         },
       ],
     }),
+    new BundleAnalyzerPlugin(),
   ],
   optimization: {
     splitChunks: {
