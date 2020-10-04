@@ -11,7 +11,8 @@
     "precommit": "lint-staged",
     "eslint:fix": "eslint --fix 'src/**/*.js'",
     "fix": "eslint --fix webpack.*.js",
-    "build:stats": "webpack  --config webpack.prod.js --env production --json > stats.json"
+    "build:stats": "webpack  --config webpack.prod.js --env production --json > stats.json",
+    "dll": "webpack --config webpack.dll.js"
   },
   "lint-staged": {
     "linters": {
