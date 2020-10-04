@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "babel-polyfill";
 import logo from "./images/logo.png";
-import bg from "./images/bg.png";
+import bg from "./images/bg.jpg";
 import "./search.less";
 
 class Search extends React.Component {
