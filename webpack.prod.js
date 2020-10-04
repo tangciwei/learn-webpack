@@ -5,7 +5,9 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const baseConfig = require("./webpack.base");
 const SpeedMeasureWebpackPlugin = require("speed-measure-webpack-plugin");
 const smp = new SpeedMeasureWebpackPlugin();
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const TerserPlugin = require("terser-webpack-plugin");
+
 const prodConfig = {
   mode: "production",
   plugins: [
@@ -45,6 +47,12 @@ const prodConfig = {
         },
       },
     },
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        cache: true,
+      }),
+    ],
   },
 };
 
