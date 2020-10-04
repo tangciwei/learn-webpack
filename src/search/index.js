@@ -1,8 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import 'babel-polyfill'
-import logo from './images/logo.png';
-import './search.less';
+import React from "react";
+import ReactDOM from "react-dom";
+import "babel-polyfill";
+import logo from "./images/logo.png";
+import bg from "./images/bg.png";
+import "./search.less";
 
 class Search extends React.Component {
   constructor(...arg) {
@@ -14,7 +15,7 @@ class Search extends React.Component {
   }
 
   loadComponent() {
-    import('./text.js').then((Text) => {
+    import("./text.js").then((Text) => {
       this.setState({
         Text: Text.default,
       });
@@ -23,7 +24,7 @@ class Search extends React.Component {
 
   render() {
     const { Text } = this.state;
-    const addResult = 'addResult';
+    const addResult = "addResult";
     return (
       // eslint-disable-next-line react/jsx-filename-extension
       <div className="search-text">
@@ -36,9 +37,10 @@ class Search extends React.Component {
             this.loadComponent();
           }}
         />
+        <img src={bg} />
       </div>
     );
   }
 }
-ReactDOM.render(<Search />, document.getElementById('root'));
+ReactDOM.render(<Search />, document.getElementById("root"));
 // ReactDOM.render(<Search />, document.body);

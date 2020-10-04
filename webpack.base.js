@@ -56,6 +56,7 @@ module.exports = {
     rules: [
       {
         test: /.js$/,
+        // include: path.resolve('src'), // 优化速度
         // exclude: /node_modules/,
         // use: ['babel-loader', 'eslint-loader'],
         use: [

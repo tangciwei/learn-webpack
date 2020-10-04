@@ -1,6 +1,7 @@
 const cssnano = require("cssnano");
+const path = require('path')
 const { merge } = require("webpack-merge");
-const webpack = require('webpack');
+const webpack = require("webpack");
 const HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const baseConfig = require("./webpack.base");
@@ -8,6 +9,7 @@ const SpeedMeasureWebpackPlugin = require("speed-measure-webpack-plugin");
 const smp = new SpeedMeasureWebpackPlugin();
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const TerserPlugin = require("terser-webpack-plugin");
+const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 
 const prodConfig = {
   mode: "production",
@@ -33,6 +35,7 @@ const prodConfig = {
     new webpack.DllReferencePlugin({
       manifest: require("./build/library/library.json"),
     }),
+    new HardSourceWebpackPlugin(),
     // new BundleAnalyzerPlugin(),
   ],
   optimization: {
@@ -54,9 +57,23 @@ const prodConfig = {
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        cache: true,
+        cache: true, // 压缩缓存
       }),
     ],
+  },
+  resolve: {
+    alias: {
+      react: path.resolve(
+        __dirname,
+        "./node_modules/react/umd/react.production.min.js"
+      ),
+      "react-dom": path.resolve(
+        __dirname,
+        "./node_modules/react-dom/umd/react-dom.production.min.js"
+      ),
+    },
+    // extensions: ['.js'],
+    // mainFields: ['main']
   },
 };
 
