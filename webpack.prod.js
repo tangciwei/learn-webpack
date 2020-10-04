@@ -1,38 +1,31 @@
-const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // 无法和style-loader共存
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const cssnano = require("cssnano");
-const webpackBase = require("./webpack.base");
+const cssnano = require('cssnano');
+const {merge} = require('webpack-merge');
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const baseConfig = require('./webpack.base');
 
-module.exports = {
-  ...webpackBase,
-  mode: "none",
+const prodConfig = {
+  mode: 'production',
   plugins: [
-    ...webpackBase.plugins,
-    new MiniCssExtractPlugin({
-      filename: "[name].css",
-    }),
     new OptimizeCSSAssetsPlugin({
       assetNameRegExp: /\.css$/g,
       cssProcessor: cssnano,
     }),
-    new CleanWebpackPlugin(),
-    function () {
-      this.hooks.done.tap("done", (stats) => {
-        // console.log(stats)
-        // if (
-        //   stats.compilation.errors &&
-        //   stats.compilation.errors.length &&
-        //   process.argv.indexOf("--watch") == -1
-        // ) {
-        //   console.log("build error");
-        //   process.exit(1);
-        // }
-      });
-    },
+    new HtmlWebpackExternalsPlugin({
+      externals: [
+        {
+          module: 'react',
+          entry: 'https://11.url.cn/now/lib/16.2.0/react.min.js',
+          global: 'React',
+        },
+        {
+          module: 'react-dom',
+          entry: 'https://11.url.cn/now/lib/16.2.0/react-dom.min.js',
+          global: 'ReactDOM',
+        },
+      ],
+    }),
   ],
-
   optimization: {
     splitChunks: {
       minSize: 0,
@@ -43,13 +36,13 @@ module.exports = {
         //   chunks: "all",
         // },
         commons: {
-          name: "commons",
-          chunks: "all",
+          name: 'vendors',
+          chunks: 'all',
           minChunks: 2,
         },
       },
     },
   },
-  stats: "errors-only",
-  // devtool: "inline-source-map",
 };
+
+module.exports = merge(baseConfig, prodConfig);

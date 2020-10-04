@@ -1,15 +1,17 @@
-const path = require('path');
+const autoprefixer = require('autoprefixer');
 const glob = require('glob');
+const path = require('path');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const autoprefixer = require('autoprefixer');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 
-// 无法和style-loader共存
-const setMpa = () => {
+const projectRoot = process.cwd();
+
+const setMPA = () => {
   const entry = {};
   const htmlWebpackPlugins = [];
-  const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'));
+  const entryFiles = glob.sync(path.join(projectRoot, './src/*/index.js'));
 
   Object.keys(entryFiles).forEach((index) => {
     const entryFile = entryFiles[index];
@@ -18,25 +20,22 @@ const setMpa = () => {
     const pageName = match && match[1];
 
     entry[pageName] = entryFile;
-
-    htmlWebpackPlugins.push(
-      new HtmlWebpackPlugin({
-        // inlineSource: ".css$",
-        template: path.join(__dirname, `src/${pageName}/index.html`),
-        filename: `${pageName}.html`,
-        // chunks: [pageName],
-        chunks: ['vendors', pageName], // todo
-        inject: true,
-        minify: {
-          html5: true,
-          collapseWhitespace: true,
-          preserveLineBreaks: false,
-          minifyCSS: true,
-          minifyJS: true,
-          removeComments: false,
-        },
-      }),
-    );
+    const obj = new HtmlWebpackPlugin({
+      inlineSource: '.css$', // todo
+      template: path.join(projectRoot, `./src/${pageName}/index.html`),
+      filename: `${pageName}.html`,
+      chunks: ['vendors', pageName],
+      inject: true,
+      minify: {
+        html5: true,
+        collapseWhitespace: true,
+        preserveLineBreaks: false,
+        minifyCSS: true,
+        minifyJS: true,
+        removeComments: false,
+      },
+    });
+    return htmlWebpackPlugins.push(obj);
   });
 
   return {
@@ -45,25 +44,45 @@ const setMpa = () => {
   };
 };
 
-const { entry, htmlWebpackPlugins } = setMpa();
+const { entry, htmlWebpackPlugins } = setMPA();
+
 module.exports = {
   entry,
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: '[name]_[chunkhash:4].js',
+    path: path.join(projectRoot, 'dist'),
+    filename: '[name]_[chunkhash:8].js',
   },
   module: {
     rules: [
       {
         test: /.js$/,
-        exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        // exclude: /node_modules/,
+        // use: ['babel-loader', 'eslint-loader'],
+        use: [
+          {
+            loader: 'babel-loader',
+          },
+        ],
+      },
+      {
+        test: /.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /.less$/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
+          // {
+          //   loader: 'postcss-loader',
+          //   options: {
+          //     plugins: () => [
+          //       autoprefixer({
+          //         overrideBrowserslist: ['last 2 version', '>1%', 'ios 7'],
+          //       }),
+          //     ],
+          //   },
+          // },
           {
             loader: 'postcss-loader',
             options: {
@@ -86,7 +105,6 @@ module.exports = {
           'less-loader',
         ],
       },
-
       {
         test: /.(png|jpg|gif|jpeg)$/,
         use: [
@@ -104,12 +122,30 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: '[name]_[hash:8].[ext]',
+              name: '[name]_[hash:8][ext]',
             },
           },
         ],
       },
     ],
   },
-  plugins: [...htmlWebpackPlugins,new FriendlyErrorsWebpackPlugin()],
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name]_[contenthash:8].css',
+    }),
+    new CleanWebpackPlugin(),
+    new FriendlyErrorsWebpackPlugin(),
+    function errorPlugin() {
+      this.hooks.done.tap('done', (stats) => {
+        if (
+          stats.compilation.errors
+          && stats.compilation.errors.length
+          && process.argv.indexOf('--watch') === -1
+        ) {
+          process.exit(1);
+        }
+      });
+    },
+  ].concat(htmlWebpackPlugins),
+  // stats: 'errors-only',
 };
